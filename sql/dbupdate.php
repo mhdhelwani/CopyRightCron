@@ -5,7 +5,7 @@ if (!$ilDB->tableExists('cron_crnhk_files_list')) {
         'obj_id' => array(
             'type' => 'integer',
             'length' => 8,
-            'notnull' => true
+            'notnull' => trueq
         ),
         'ref_id' => array(
             'type' => 'integer',
@@ -29,22 +29,22 @@ if (!$ilDB->tableExists('cron_crnhk_files_list')) {
         ),
         'file_info' => array(
             'type' => 'text',
-            'length' => 255,
+            'length' => 4000,
             'notnull' => false
         ),
         'parent_type' => array(
             'type' => 'text',
-            'length' => 255,
+            'length' => 4000,
             'notnull' => true
         ),
         'parent_title' => array(
             'type' => 'text',
-            'length' => 255,
+            'length' => 4000,
             'notnull' => true
         ),
         'path' => array(
             'type' => 'text',
-            'length' => 255,
+            'length' => 4000,
             'notnull' => true
         )
     );
