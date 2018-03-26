@@ -29,15 +29,15 @@ class copyrightCronHelper
                         $parent_node_data = $tree->getParentNodeData($row["ref_id"]);
 
                         if ($parent_node_data["type"] === "root") {
-                            $path = "\\\$txt = \\\$lng->txt('obj_" . $parent_node_data["type"] . "');";
+                            $path = "\$txt = \$lng->txt('obj_" . $parent_node_data["type"] . "');";
                         } else {
-                            $path = "\\\$txt = '" .
+                            $path = "\$txt = \$lng->txt('obj_" . $parent_node_data["type"] . "') . ' (" .
                                 self::_buildPath(
                                     $tree,
                                     $row["ref_id"],
                                     "ref_id",
                                     true
-                                ) . "';";
+                                ) . ")';";
                         }
 
                         self::_insertFile($row["obj_id"],
@@ -47,9 +47,9 @@ class copyrightCronHelper
                             $row["title"],
                             "file",
                             $parent_node_data["type"],
-                            "\\\$txt = " . ($parent_node_data["type"] === "root" ?
-                                "\\\$lng->txt('obj_" . $parent_node_data["type"] . "');" :
-                                "'" . $parent_node_data["title"] . "';"),
+                            "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(' . " . ($parent_node_data["type"] === "root" ?
+                                "\$lng->txt('obj_" . $parent_node_data["type"] . "') . ')';" :
+                                "'" . $parent_node_data["title"] . "' . ')';"),
                             $path);
                         break;
                     case "mep":
@@ -79,8 +79,8 @@ class copyrightCronHelper
                                         $mediaItem->getlocation(),
                                         "mob_" . $mediaItem->getPurpose(),
                                         $row["type"],
-                                        "\\\$txt = '" . $row["title"] . "';",
-                                        "\\\$txt = '" . self::_buildPath(
+                                        "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                        "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . self::_buildPath(
                                             $tree,
                                             $row["ref_id"],
                                             "ref_id",
@@ -90,7 +90,7 @@ class copyrightCronHelper
                                             $row_mep["mep_obj_id"],
                                             "mep_obj_id",
                                             false) .
-                                        " &raquo; " . $mediaItem->getPurpose() . "';");
+                                        " &raquo; " . $mediaItem->getPurpose() . ")';");
                                 }
                             }
                             try {
@@ -114,8 +114,8 @@ class copyrightCronHelper
                                             $pi["basename"],
                                             "mob|" . $pi["basename"] . "|" . $sub_dir,
                                             $row["type"],
-                                            "\\\$txt = '" . $row["title"] . "';",
-                                            "\\\$txt = '" . self::_buildPath(
+                                            "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                            "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . self::_buildPath(
                                                 $tree,
                                                 $row["ref_id"],
                                                 "",
@@ -126,7 +126,7 @@ class copyrightCronHelper
                                                 $row_mep["mep_obj_id"],
                                                 "mep_obj_id",
                                                 false) .
-                                            str_replace("/", " &raquo; ", trim($sub_dir)) . "';");
+                                            str_replace("/", " &raquo; ", trim($sub_dir)) . ")';");
                                     }
                                 }
                             } catch (Exception $e) {
@@ -145,11 +145,11 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     $row["title"],
-                                    self::_buildPath(
+                                    "'" . self::_buildPath(
                                         $mediaPoolTree,
                                         $page["id"],
                                         "",
-                                        false),
+                                        false) . "'",
                                     $a_log);
                             }
                         }
@@ -169,11 +169,11 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     $row["title"],
-                                    self::_buildPath(
+                                    "'" . self::_buildPath(
                                         $sCORMPoolTree,
                                         $page["id"],
                                         "",
-                                        false),
+                                        false) . "'",
                                     $a_log);
                             }
                         }
@@ -192,7 +192,7 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     $row["title"],
-                                    $blogPosting->getTitle(),
+                                    "'" . $blogPosting->getTitle() . "'",
                                     $a_log);
                             }
                         }
@@ -205,9 +205,9 @@ class copyrightCronHelper
                                 $blog->getImage(),
                                 "blog_banner",
                                 $row["type"],
-                                "\\\$txt = '" . $row["title"] . "';",
-                                "\\\$lng->loadLanguageModule('blog'); \\\$txt = '" . self::_buildPath($tree, $row["ref_id"], "", true) .
-                                " &raquo; ' . \\\$lng->txt('blog_banner');");
+                                "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                "\$lng->loadLanguageModule('blog'); \$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" .
+                                self::_buildPath($tree, $row["ref_id"], "", true) . " &raquo; ' . \$lng->txt('blog_banner') . ')';");
                         }
                         break;
                     case "poll":
@@ -223,9 +223,9 @@ class copyrightCronHelper
                                 $poll->getImage(),
                                 "poll_image",
                                 $row["type"],
-                                "\\\$txt = '" . $row["title"] . "';",
-                                "\\\$lng->loadLanguageModule('poll'); \\\$txt = '" . self::_buildPath($tree, $row["ref_id"], "", true) .
-                                " &raquo; ' . \\\$lng->txt('poll_image');");
+                                "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                "\$lng->loadLanguageModule('poll'); \$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" .
+                                self::_buildPath($tree, $row["ref_id"], "", true) . " &raquo; ' . \$lng->txt('poll_image') . ')' ;");
                         }
                         break;
                     case "crs":
@@ -243,7 +243,7 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     $row["title"],
-                                    $loTitle,
+                                    "'" . $loTitle . "'",
                                     $a_log);
                             }
                         }
@@ -258,9 +258,9 @@ class copyrightCronHelper
                                 $courseInfoFile->getFileName(),
                                 "crs",
                                 $row["type"],
-                                "\\\$txt = '" . $row["title"] . "';",
-                                "\\\$lng->loadLanguageModule('crs'); \\\$txt = '" . self::_buildPath($tree, $row["ref_id"], "", true) .
-                                " &raquo; ' . \\\$lng->txt('crs_info_settings');");
+                                "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                "\$lng->loadLanguageModule('crs'); \$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" .
+                                self::_buildPath($tree, $row["ref_id"], "", true) . " &raquo; ' . \$lng->txt('crs_info_settings') . ')';");
                         }
 
                         // get course content page
@@ -273,7 +273,7 @@ class copyrightCronHelper
                                 $row["type"],
                                 $row["ref_id"],
                                 $row["title"],
-                                "' . \\\$copyRightPlugin->txt('content_page') . '",
+                                "\$copyRightPlugin->txt('content_page')",
                                 $a_log);
                         }
 
@@ -287,7 +287,7 @@ class copyrightCronHelper
                                 $row["type"],
                                 $row["ref_id"],
                                 $row["title"],
-                                "' . \\\$copyRightPlugin->txt('content_start_page') . '",
+                                "\$copyRightPlugin->txt('content_start_page')",
                                 $a_log);
                         }
                         break;
@@ -302,7 +302,7 @@ class copyrightCronHelper
                                 $row["type"],
                                 $row["ref_id"],
                                 $row["title"],
-                                "' . \\\$copyRightPlugin->txt('content_page') . '",
+                                "\$copyRightPlugin->txt('content_page')",
                                 $a_log);
                         }
                         break;
@@ -317,7 +317,7 @@ class copyrightCronHelper
                                 $row["type"],
                                 $row["ref_id"],
                                 $row["title"],
-                                "' . \\\$copyRightPlugin->txt('content_page') . '",
+                                "\$copyRightPlugin->txt('content_page')",
                                 $a_log);
                         }
                         break;
@@ -346,8 +346,9 @@ class copyrightCronHelper
                                         $pi["basename"],
                                         "lms_html_file|" . $pi["basename"] . "|" . $sub_dir,
                                         $row["type"],
-                                        "\\\$txt = '" . $row["title"] . "';",
-                                        "\\\$txt = '" . self::_buildPath($tree, $row["ref_id"], "", true) . ";");
+                                        "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                        "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" .
+                                        self::_buildPath($tree, $row["ref_id"], "", true) . ")';");
                                 }
                             }
                         } catch (Exception $e) {
@@ -365,7 +366,7 @@ class copyrightCronHelper
                                 $row["type"],
                                 $row["ref_id"],
                                 $row["title"],
-                                "' . \\\$copyRightPlugin->txt('content_page') . '",
+                                "\$copyRightPlugin->txt('content_page')",
                                 $a_log);
                         }
                         break;
@@ -385,7 +386,7 @@ class copyrightCronHelper
                                         $row["type"],
                                         $row["ref_id"],
                                         $row["title"],
-                                        $glossaryTerm["term"],
+                                        "'" . $glossaryTerm["term"] . "'",
                                         $a_log);
                                 }
                             }
@@ -406,7 +407,7 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     $row["title"],
-                                    $table->getTitle(),
+                                    "'" . $table->getTitle() . "'",
                                     $a_log);
 
                                 $fileFieldFound = false;
@@ -443,9 +444,10 @@ class copyrightCronHelper
                                                         $rowFile["title"],
                                                         "file",
                                                         $row["type"],
-                                                        "\\\$txt = '" . $row["title"] . "';",
-                                                        "\\\$txt = '" . self::_buildPath($tree, $row["ref_id"], "", true) .
-                                                        " &raquo; " . $table->getTitle() . ";");
+                                                        "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                                        "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" .
+                                                        self::_buildPath($tree, $row["ref_id"], "", true) .
+                                                        " &raquo; " . $table->getTitle() . " . ')'';");
                                                 }
                                             }
                                         }
@@ -474,7 +476,7 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     $row["title"],
-                                    $title,
+                                    "'" . $title . "'",
                                     $a_log);
                             }
                         }
@@ -521,7 +523,7 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     $row["title"],
-                                    $page->getTitle(),
+                                    "'" . $page->getTitle() . "'",
                                     $a_log);
                             }
                         }
@@ -537,8 +539,9 @@ class copyrightCronHelper
                             $biblObj->getFilename(),
                             "bibl",
                             $row["type"],
-                            "\\\$txt = '" . $row["title"] . "';",
-                            "\\\$txt = '" . self::_buildPath($tree, $row["ref_id"], "", true) . "';");
+                            "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                            "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" .
+                            self::_buildPath($tree, $row["ref_id"], "", true) . ")';");
                         break;
                     case "book":
                         require_once "./Modules/BookingManager/classes/class.ilBookingObject.php";
@@ -554,14 +557,14 @@ class copyrightCronHelper
                                     $bookObj["info_file"],
                                     "book_info_file",
                                     $row["type"],
-                                    "\\\$txt = '" . $row["title"] . "';",
-                                    "\\\$txt = '" . self::_buildPath(
+                                    "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                    "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . self::_buildPath(
                                         $tree,
                                         $row["ref_id"],
                                         "",
                                         true) .
                                     " &raquo; " . $bookObj["title"] .
-                                    " &raquo; ' . \\\$copyRightPlugin->txt('information_file');");
+                                    " &raquo; ' . \$copyRightPlugin->txt('information_file') . ')';");
                             }
 
                             if ($bookObj["post_file"]) {
@@ -572,14 +575,14 @@ class copyrightCronHelper
                                     $bookObj["post_file"],
                                     "book_post_file",
                                     $row["type"],
-                                    "\\\$txt = '" . $row["title"] . "';",
-                                    "\\\$txt = '" . self::_buildPath(
+                                    "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                    "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . self::_buildPath(
                                         $tree,
                                         $row["ref_id"],
                                         "",
                                         true) .
                                     " &raquo; " . $bookObj["title"] .
-                                    " &raquo; ' . \\\$copyRightPlugin->txt('post_file');");
+                                    " &raquo; ' . \$copyRightPlugin->txt('post_file') . ')';");
                             }
                         }
                         break;
@@ -590,7 +593,6 @@ class copyrightCronHelper
 
                         $exAssignments = ilExAssignment::getAssignmentDataOfExercise($row["obj_id"]);
                         $exerciseObj = new ilObjExercise($row["ref_id"]);
-                        $lng->loadLanguageModule("exc");
 
                         foreach ($exAssignments as $exAssignment) {
                             $exAssignmentObj = new ilExAssignment($exAssignment["id"]);
@@ -603,14 +605,15 @@ class copyrightCronHelper
                                     $exAssignment["fb_file"],
                                     "exc_global_feedback_file",
                                     $row["type"],
-                                    "\\\$txt = '" . $row["title"] . "';",
-                                    "\\\$lng->loadLanguageModule('exc'); \\\$txt = '" . self::_buildPath(
+                                    "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                    "\$lng->loadLanguageModule('exc'); \$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" .
+                                    self::_buildPath(
                                         $tree,
                                         $row["ref_id"],
                                         "",
                                         true) .
                                     " &raquo; " . $exAssignment["title"] .
-                                    " &raquo; ' . \\\$lng->txt('exc_global_feedback_file');");
+                                    " &raquo; ' . \$lng->txt('exc_global_feedback_file') . ')';");
                             }
 
                             $files = $exAssignmentObj->getFiles();
@@ -624,14 +627,15 @@ class copyrightCronHelper
                                         $file["name"],
                                         "exc_instruction_files|" . $file["name"],
                                         $row["type"],
-                                        "\\\$txt = '" . $row["title"] . "';",
-                                        "\\\$lng->loadLanguageModule('exc'); \\\$txt = '" . self::_buildPath(
+                                        "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                        "\$lng->loadLanguageModule('exc'); \$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" .
+                                        self::_buildPath(
                                             $tree,
                                             $row["ref_id"],
                                             "",
                                             true) .
                                         " &raquo; " . $exAssignment["title"] .
-                                        " &raquo; ' . \\\$lng->txt('exc_instruction_files');");
+                                        " &raquo; ' . \$lng->txt('exc_instruction_files') . ')';");
                                 }
                             }
 
@@ -664,14 +668,15 @@ class copyrightCronHelper
                                                         "peer_feedback|" . $file_name . "|" . $item->getId() . "|" .
                                                         $peerReview["peer_id"],
                                                         $row["type"],
-                                                        "\\\$txt = '" . $row["title"] . "';",
-                                                        "\\\$txt = '" . self::_buildPath(
+                                                        "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                                        "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" .
+                                                        self::_buildPath(
                                                             $tree,
                                                             $row["ref_id"],
                                                             "",
                                                             true) .
                                                         " &raquo; " . $exAssignment["title"] .
-                                                        " &raquo; ' . \\\$copyRightPlugin->txt('peer_feedback');");
+                                                        " &raquo; ' . \$copyRightPlugin->txt('peer_feedback') . ')';");
                                                 }
                                             }
                                         }
@@ -688,14 +693,15 @@ class copyrightCronHelper
                                         $submissionFile["filetitle"],
                                         "exc_return|" . $submissionFile["filetitle"] . "|" . $submissionFile["returned_id"],
                                         $row["type"],
-                                        "\\\$txt = '" . $row["title"] . "';",
-                                        "\\\$lng->loadLanguageModule('exc'); \\\$txt = '" . self::_buildPath(
+                                        "\$txt =\$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                        "\$lng->loadLanguageModule('exc'); \$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" .
+                                        self::_buildPath(
                                             $tree,
                                             $row["ref_id"],
                                             "",
                                             true) .
                                         " &raquo; " . $exAssignment["title"] .
-                                        " &raquo; ' . \\\$lng->txt('exc_submission');");
+                                        " &raquo; ' . \$lng->txt('exc_submission') . ')';");
                                 }
 
                                 require_once "./Modules/Exercise/classes/class.ilFSStorageExercise.php";
@@ -711,15 +717,15 @@ class copyrightCronHelper
                                         $file,
                                         "ass_feedback|" . $file . "|" . $member["usr_id"],
                                         $row["type"],
-                                        "\\\$txt = '" . $row["title"] . "';",
-                                        "\\\$txt = '" . self::_buildPath(
+                                        "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                        "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . self::_buildPath(
                                             $tree,
                                             $row["ref_id"],
                                             "",
                                             true) .
                                         " &raquo; " . $exAssignment["title"] .
-                                        " &raquo; ' . \\\$copyRightPlugin->txt('exc_fb_file') . '" . " &raquo; " .
-                                        $member["name"] . "[" . $member["firstname"] . "]" . ";");
+                                        " &raquo; ' . \$copyRightPlugin->txt('exc_fb_file') . '" . " &raquo; " .
+                                        $member["name"] . "[" . $member["firstname"] . "]" . ")';");
                                 }
                             }
                         }
@@ -747,18 +753,16 @@ class copyrightCronHelper
                                         $mediaItem->getlocation(),
                                         "mob_" . $mediaItem->getPurpose(),
                                         $row["type"],
-                                        "\\\$txt = '" . $row["title"] . "';",
-                                        "\\\$txt = '" . self::_buildPath(
+                                        "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                        "\$txt = '" . self::_buildPath(
                                             $tree,
                                             $row["ref_id"],
                                             "",
                                             true) .
                                         " &raquo; " . $mediaCastItem["title"] . " &raquo; " .
-                                        $mediaItem->getPurpose() . "'");
+                                        $mediaItem->getPurpose() . ")';");
                                 }
                             }
-
-                            $lng->loadLanguageModule("mcst");
 
                             if ($mob->getVideoPreviewPic()) {
                                 self::_insertFile($mob->getId(),
@@ -768,13 +772,14 @@ class copyrightCronHelper
                                     $mob->getVideoPreviewPic(true),
                                     "mob_preview_pic",
                                     $row["type"],
-                                    "\\\$txt = '" . $row["title"] . "';",
-                                    "\\\$lng->loadLanguageModule('mcst'); \\\$txt = '" . self::_buildPath(
+                                    "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                    "\$lng->loadLanguageModule('mcst'); \$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" .
+                                    self::_buildPath(
                                         $tree,
                                         $row["ref_id"],
                                         "",
                                         true) .
-                                    " &raquo; " . $mediaCastItem["title"] . " &raquo; ' . \\\$lng->txt('mcst_preview_picture');");
+                                    " &raquo; " . $mediaCastItem["title"] . " &raquo; ' . \$lng->txt('mcst_preview_picture') . ')';");
                             }
                         }
                         break;
@@ -827,14 +832,14 @@ class copyrightCronHelper
                                             $file["name"],
                                             "forum|" . $file["name"],
                                             $row["type"],
-                                            "\\\$txt = '" . $row["title"] . "';",
-                                            "\\\$txt = '" . self::_buildPath(
+                                            "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                            "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . self::_buildPath(
                                                 $tree,
                                                 $row["ref_id"],
                                                 "",
                                                 true) .
                                             " &raquo; " . $thread->getSubject() . $postPath . " &raquo; " .
-                                            $post->getSubject() . "';");
+                                            $post->getSubject() . ")';");
                                     }
                                 }
                             }
@@ -868,8 +873,8 @@ class copyrightCronHelper
                     $row["title"],
                     "file",
                     "wps",
-                    "\\\$txt = '';",
-                    "\\\$txt = '" . ($file_path ? " &raquo; " . $file_path : "") . "'");
+                    "\$txt = 'Workspace';",
+                    "\$txt = 'Workspace " . ($file_path ? " &raquo; " . $file_path : "") . "';");
             }
 
             // Portfolio Files
@@ -909,9 +914,9 @@ class copyrightCronHelper
                             $portfolio["img"],
                             "portfolio_banner",
                             "prtf",
-                            "\\\$txt = '" . $portfolio["title"] . "';",
-                            "\\\$lng->loadLanguageModule('prtf'); \\\$txt = 'PortFolio &raquo; " . $portfolio["title"] .
-                            " &raquo; ' . \\\$lng->txt('prtf_banner');");
+                            "\$txt = 'Portfolio (" . $portfolio["title"] . ")';",
+                            "\$lng->loadLanguageModule('prtf'); \$txt = 'PortFolio &raquo; " . $portfolio["title"] .
+                            " &raquo; ' . \$lng->txt('prtf_banner');");
                     }
                 }
 
@@ -925,8 +930,8 @@ class copyrightCronHelper
                         $usrObj->getPref("profile_image"),
                         "profile_picture",
                         "prtf",
-                        "\\\$txt = \\\$lng->txt('personal_data');",
-                        "\\\$txt = \\\$lng->txt('personal_data');");
+                        "\$txt = \$lng->txt('personal_data');",
+                        "\$txt = \$lng->txt('personal_data');");
                 }
 
                 // mail attachment
@@ -948,8 +953,8 @@ class copyrightCronHelper
                         $emailFile["name"],
                         "email_attachment|" . $emailFile["name"],
                         "att",
-                        "\\\$txt = \\\$copyRightPlugin->txt(('email_attachment');",
-                        "\\\$txt = \\\$copyRightPlugin->txt(('email_attachment');");
+                        "\$txt = \$copyRightPlugin->txt('email_attachment');",
+                        "\$txt = \$copyRightPlugin->txt('email_attachment');");
                 }
             }
 
@@ -958,8 +963,6 @@ class copyrightCronHelper
             include_once "./Services/Authentication/classes/class.ilLoginPage.php";
 
             $installed = $lng->getInstalledLanguages();
-            $lng->loadLanguageModule("meta");
-            $authTitle = $lng->txt("obj_auth");
 
             foreach ($installed as $key => $langkey) {
                 if (ilLoginPage::_exists("auth", ilLanguage::lookupId($langkey))) {
@@ -968,10 +971,11 @@ class copyrightCronHelper
                     self::_fillFileArrayFromPageContent($loginPage->getXMLContent(),
                         "auth",
                         18,
-                        $authTitle,
-                        "'" . $authTitle . " &raquo; ' . \\\$lng->txt('meta_l_" . $langkey . "')",
+                        "\$lng->txt('obj_auth')",
+                        "\$lng->txt('obj_auth') . ' &raquo; ' . \$lng->txt('meta_l_" . $langkey . "')",
                         $a_log,
-                        false);
+                        false,
+                        "\$lng->loadLanguageModule('meta');");
                 }
             }
 
@@ -979,8 +983,7 @@ class copyrightCronHelper
             include_once "./Services/Imprint/classes/class.ilImprint.php";
 
             if (ilImprint::_exists("impr", 1)) {
-                ;
-                $lgTitle = "\\\$lng->loadLanguageModule('administration'); \\\$lng->txt('adm_imprint')";
+                $lgTitle = "\$lng->txt('adm_imprint')";
                 $lgPage = new ilImprint(1);
 
                 self::_fillFileArrayFromPageContent($lgPage->getXMLContent(),
@@ -989,7 +992,8 @@ class copyrightCronHelper
                     $lgTitle,
                     $lgTitle,
                     $a_log,
-                    false);
+                    false,
+                    "\$lng->loadLanguageModule('administration');");
             }
 
             // get repository content page
@@ -1001,8 +1005,8 @@ class copyrightCronHelper
                 self::_fillFileArrayFromPageContent($copPage->getXMLContent(),
                     "root",
                     1,
-                    "\\\$copyRightPlugin->txt('content_page')",
-                    "\\\$lng->txt('obj_root')  . ' &raquo; ' .  \\\$copyRightPlugin->txt('content_page')",
+                    "\$copyRightPlugin->txt('content_page')",
+                    "\$lng->txt('obj_root')  . ' &raquo; ' .  \$copyRightPlugin->txt('content_page')",
                     $a_log,
                     false);
             }
@@ -1013,17 +1017,17 @@ class copyrightCronHelper
             include_once "./Services/Payment/classes/class.ilShopInfoGUI.php";
 
             $pages = ilPageObject::getAllPages("shop", 0);
-            $shopTitle = "\\\$lng->loadLanguageModule('payment'); \\\$lng->txt('pay_header')";
+            $shopTitle = "\$lng->txt('pay_header')";
 
             foreach ($pages as $page) {
                 if (ilShopPage::_exists("shop", $page["id"])) {
                     $shopPage = new ilShopPage($page["id"]);
 
                     if ($page["id"] === (string)ilObjPaymentSettingsGUI::CONDITIONS_EDITOR_PAGE_ID) {
-                        $shopPath = $shopTitle . ". ' &raquo; ' . \\\$lng->txt('documents')";
+                        $shopPath = $shopTitle . ". ' &raquo; ' . \$lng->txt('documents')";
                         $ref_id = 19;
                     } else if ($page["id"] === (string)ilShopInfoGUI::SHOP_PAGE_EDITOR_PAGE_ID) {
-                        $shopPath = $shopTitle . ". ' &raquo; ' . \\\$lng->txt('shop_info')";
+                        $shopPath = $shopTitle . ". ' &raquo; ' . \$lng->txt('shop_info')";
                         $ref_id = -1;
                     } else {
                         $shopPath = $shopTitle . " . ' &raquo; Content'";
@@ -1036,7 +1040,8 @@ class copyrightCronHelper
                         $shopTitle,
                         $shopPath,
                         $a_log,
-                        false);
+                        false,
+                        "\$lng->loadLanguageModule('payment');");
                 }
             }
 
@@ -1045,7 +1050,7 @@ class copyrightCronHelper
             include_once "./Services/Style/classes/class.ilPageLayout.php";
 
             $pages = ilPageLayout::getLayoutsAsArray();
-            $stysTitle = "\\\$lng->txt('obj_stys')";
+            $stysTitle = "\$lng->txt('obj_stys')";
 
             foreach ($pages as $page) {
                 if (ilPageLayoutPage::_exists("stys", $page["id"])) {
@@ -1200,7 +1205,8 @@ class copyrightCronHelper
                                                           $row_title,
                                                           $pageTitle,
                                                           $log,
-                                                          $build_path = true)
+                                                          $build_path = true,
+                                                          $lngToLoad = "")
     {
         global $ilDB, $tree;
 
@@ -1213,20 +1219,23 @@ class copyrightCronHelper
                 $mediaObject = new ilObjMediaObject($row_file["obj_id"]);
                 $mediaItems = $mediaObject->getMediaItems();
                 $overlayImages = $mediaObject->getFilesOfDirectory("overlays");
-                $path = "\\\$lng->loadLanguageModule('content');";
+                $path = "\$lng->loadLanguageModule('content');";
+                if ($lngToLoad) {
+                    $path .= $lngToLoad;
+                }
 
                 foreach ($overlayImages as $overlayImage) {
                     if ($build_path) {
-                        $path .= "\\\$txt = '" . self::_buildPath(
+                        $path .= "\$txt = \$lng->txt('obj_" . $row_type . "') . '(" . self::_buildPath(
                                 $tree,
                                 $row_ref_id,
                                 "ref_id",
                                 true
-                            ) . " &raquo; " . $row_title . " &raquo; " . $pageTitle .
-                            " &raquo; " . $mediaObject->getTitle() . " &raquo; ' . \\\$lng->txt('cont_overlay_images');";
+                            ) . " &raquo; " . $row_title . " &raquo; ' ." . $pageTitle .
+                            " . ' &raquo; " . $mediaObject->getTitle() . " &raquo; ' . \$lng->txt('cont_overlay_images') .')';";
                     } else {
-                        $path .= "\\\$txt = " . $pageTitle . " . ' &raquo; " .
-                            $mediaObject->getTitle() . " &raquo; ' . \\\$lng->txt('cont_overlay_image');";
+                        $path .= "\$txt = " . $pageTitle . " . ' &raquo; " .
+                            $mediaObject->getTitle() . " &raquo; ' . \$lng->txt('cont_overlay_image');";
                     }
 
                     self::_insertFile($mediaObject->getId(),
@@ -1236,7 +1245,7 @@ class copyrightCronHelper
                         $overlayImage,
                         "interactive_overlay_image|" . $overlayImage,
                         $row_type,
-                        "\\\$txt = '" . $row_title . "';",
+                        ($build_path ? "\$txt = \$lng->txt('obj_" . $row_type . "') . '(" . $row_title . ")';" : $row_title),
                         $path);
                 }
 
@@ -1244,19 +1253,23 @@ class copyrightCronHelper
 
                 foreach ($mediaItems as $mediaItem) {
                     if ($mediaItem->getLocationType() === "LocalFile") {
+                        $path = "";
+                        if ($lngToLoad) {
+                            $path .= $lngToLoad;
+                        }
+
                         if ($build_path) {
-                            $path = "\\\$txt = '" . self::_buildPath(
+                            $path .= "\$txt = \$lng->txt('obj_" . $row_type . "') . '(" . self::_buildPath(
                                     $tree,
                                     $row_ref_id,
                                     "ref_id",
                                     true
-                                ) . " &raquo; " . $row_title . " &raquo; " . $pageTitle .
-                                " &raquo; " . $mediaObject->getTitle() .
-                                " &raquo; " . $mediaItem->getPurpose() . "';";
-                        } else {
-                            $path = "\\\$txt = " . $pageTitle .
+                                ) . " &raquo; " . $row_title . " &raquo; ' . " . $pageTitle .
                                 " . ' &raquo; " . $mediaObject->getTitle() .
-                                " &raquo; " . $mediaItem->getPurpose() . "';";
+                                " &raquo; " . $mediaItem->getPurpose() . ")';";
+                        } else {
+                            $path .= "\$txt = " . $pageTitle . " . ' &raquo; " . $mediaObject->getTitle() . " &raquo; " .
+                                $mediaItem->getPurpose() . "';";
                         }
 
                         self::_insertFile($mediaObject->getId(),
@@ -1266,7 +1279,7 @@ class copyrightCronHelper
                             $mediaItem->getlocation(),
                             "mob_" . $mediaItem->getPurpose(),
                             $row_type,
-                            "\\\$txt = '" . $row_title . "';",
+                            ($build_path ? "\$txt = \$lng->txt('obj_" . $row_type . "') . '(" . $row_title . ")';" : $row_title),
                             $path);
                     }
                     $used_file_names[] = $mediaItem->getLocation();
@@ -1290,19 +1303,22 @@ class copyrightCronHelper
                                     $used_file_names)
                             ) {
                                 $sub_dir = ($sub_dir ? $sub_dir : " ");
+                                $path = "";
+                                if ($lngToLoad) {
+                                    $path .= $lngToLoad;
+                                }
 
                                 if ($build_path) {
-                                    $path = "\\\$txt = '" . self::_buildPath(
+                                    $path .= "\$txt = \$lng->txt('obj_" . $row_type . "') . '(" . self::_buildPath(
                                             $tree,
                                             $row_ref_id,
                                             "ref_id",
                                             true) .
-                                        " &raquo; " . $row_title . " &raquo; " . $pageTitle .
-                                        " &raquo; " . $mediaObject->getTitle() .
-                                        str_replace("/", " &raquo; ", trim($sub_dir)) . "';";
+                                        " &raquo; " . $row_title . " &raquo; ' . " . $pageTitle .
+                                        " . ' &raquo; " . $mediaObject->getTitle() .
+                                        str_replace("/", " &raquo; ", trim($sub_dir)) . ")';";
                                 } else {
-                                    $path = "\\\$txt = " . $pageTitle . " . ' &raquo; " .
-                                        $mediaObject->getTitle() .
+                                    $path .= "\$txt = " . $pageTitle . " . ' &raquo; " . $mediaObject->getTitle() .
                                         str_replace("/", " &raquo; ", trim($sub_dir)) . "';";
                                 }
 
@@ -1313,7 +1329,7 @@ class copyrightCronHelper
                                     $pi["basename"],
                                     "mob|" . $pi["basename"] . "|" . $sub_dir,
                                     $row_type,
-                                    "\\\$txt = '" . $row_title . "';",
+                                    ($build_path ? "\$txt = \$lng->txt('obj_" . $row_type . "') . '(" . $row_title . ")';" : $row_title),
                                     $path);
                             }
                         }
@@ -1322,15 +1338,20 @@ class copyrightCronHelper
                     $log->warn($e->getMessage());
                 }
             } else {
+                $path = "";
+                if ($lngToLoad) {
+                    $path .= $lngToLoad;
+                }
+
                 if ($build_path) {
-                    $path = "\\\$txt = '" . self::_buildPath(
+                    $path .= "\$txt = \$lng->txt('obj_" . $row_type . "') . '(" . self::_buildPath(
                             $tree,
                             $row_ref_id,
                             "ref_id",
                             true) .
-                        " &raquo; " . $row_title . " &raquo; " . $pageTitle . "';'";
+                        " &raquo; " . $row_title . " &raquo; ' . " . $pageTitle . " . ')';";
                 } else {
-                    $path = "\\\$txt = " . $pageTitle . ";";
+                    $path .= "\$txt = " . $pageTitle . ";";
                 }
 
                 self::_insertFile($row_file["obj_id"],
@@ -1340,7 +1361,7 @@ class copyrightCronHelper
                     $row_file["title"],
                     "file",
                     $row_type,
-                    "\\\$txt = '" . $row_title . "';",
+                    ($build_path ? "\$txt = \$lng->txt('obj_" . $row_type . "') . '(" . $row_title . ")';" : $row_title),
                     $path);
             }
         }
@@ -1372,7 +1393,7 @@ class copyrightCronHelper
                 $row["type"],
                 $row["ref_id"],
                 $row["title"],
-                "\\\$text = '" . $question["title"] . " &raquo; ' . \\\$copyRightPlugin->txt('question_page');",
+                "'" . $question["title"] . " &raquo; ' . \$copyRightPlugin->txt('question_page')",
                 $a_log);
         }
 
@@ -1386,7 +1407,7 @@ class copyrightCronHelper
                     $row["type"],
                     $row["ref_id"],
                     $row["title"],
-                    "\\\$text = '" . $question["title"] . " &raquo; ' . \\\$lng->txt('hint');",
+                    "'" . $question["title"] . " &raquo; ' . \$lng->txt('hint')",
                     $a_log);
             }
         }
@@ -1403,7 +1424,7 @@ class copyrightCronHelper
                     $row["type"],
                     $row["ref_id"],
                     $row["title"],
-                    "\\\$text = '" . $question["title"] . " &raquo; ' . \\\$lng->txt('feedback_generic');",
+                    "'" . $question["title"] . " &raquo; ' . \$lng->txt('feedback_generic')",
                     $a_log);
             }
         }
@@ -1420,7 +1441,7 @@ class copyrightCronHelper
                     $row["type"],
                     $row["ref_id"],
                     $row["title"],
-                    "\\\$text = '" . $question["title"] . " &raquo; ' . \\\$lng->txt('feedback_generic');",
+                    "'" . $question["title"] . " &raquo; ' . \$lng->txt('feedback_generic')",
                     $a_log);
             }
         }
@@ -1441,13 +1462,13 @@ class copyrightCronHelper
                     $questionSuggestion["value"]["filename"] : $questionSuggestion["value"]["name"],
                 "qpl_recapitulation",
                 $row["type"],
-                "\\\$txt = '" . $row["title"] . "';",
-                "\\\$txt = '" . self::_buildPath(
+                "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . self::_buildPath(
                     $tree,
                     $row["ref_id"],
                     "",
                     true) .
-                " &raquo; " . $question["title"] . " &raquo; ' . \\\$copyRightPlugin->txt('suggested_solution');");
+                " &raquo; " . $question["title"] . " &raquo; ' . \$copyRightPlugin->txt('suggested_solution') . ')';");
         }
 
         if ($question["type_tag"] === "assFileUpload" && $tstObj) {
@@ -1474,14 +1495,14 @@ class copyrightCronHelper
                                 "tst_solutions|" . $solutionFile["value1"] . "|" . $solutionFile["solution_id"] . "|" .
                                 $data->getTest()->getTestId() . "|" . $solutionFile["value2"] . "|" . $questionData["qid"],
                                 $row["type"],
-                                "\\\$txt = '" . $row["title"] . "';",
-                                "\\\$text = '" . self::_buildPath($tree,
+                                "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                                "\$text = \$lng->txt('obj_" . $row["type"] . "') . '(" . self::_buildPath($tree,
                                     $row["ref_id"],
                                     "",
                                     true) .
-                                " &raquo; " . $question["title"] . " &raquo; ' . \\\$copyRightPlugin->txt('test_solution') . ' &raquo; ' .
-                                \\\$lng->txt('toplist_col_participant') . '/' .\\\$lng->txt('pass') . ' [ " .
-                                $participant->getName() . "/" . ($pass + 1) . "']'");
+                                " &raquo; " . $question["title"] . " &raquo; ' . \$copyRightPlugin->txt('test_solution') . ' &raquo; ' .
+                                \$lng->txt('toplist_col_participant') . '/' .\$lng->txt('pass') . ' [ " .
+                                $participant->getName() . "/" . ($pass + 1) . "'])';");
                         }
                     }
                 }
@@ -1497,12 +1518,12 @@ class copyrightCronHelper
                     $questionObj->getJavaAppletFilename(),
                     "java_applet",
                     $row["type"],
-                    "\\\$txt = '" . $row["title"] . "';",
-                    "\\\$text = '" . self::_buildPath($tree,
+                    "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                    "\$text = \$lng->txt('obj_" . $row["type"] . "') . '(" . self::_buildPath($tree,
                         $row["ref_id"],
                         "",
                         true) .
-                    " & raquo; " . $question["title"] . " & raquo; ' . \\\$copyRightPlugin->txt('question_file');");
+                    " & raquo; " . $question["title"] . " & raquo; ' . \$copyRightPlugin->txt('question_file') . ')';");
             }
         } else if ($question["type_tag"] === "assImagemapQuestion") {
             if ($questionObj->getImageFilename()) {
@@ -1513,12 +1534,12 @@ class copyrightCronHelper
                     $questionObj->getImageFilename(),
                     "image_map",
                     $row["type"],
-                    "\\\$txt = '" . $row["title"] . "';",
-                    "\\\$text = '" . self::_buildPath($tree,
+                    "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                    "\$text = \$lng->txt('obj_" . $row["type"] . "') . '(" . self::_buildPath($tree,
                         $row["ref_id"],
                         "",
                         true) .
-                    " & raquo; " . $question["title"] . " & raquo; ' . \\\$copyRightPlugin->txt('question_file');");
+                    " & raquo; " . $question["title"] . " & raquo; ' . \$copyRightPlugin->txt('question_file') . ')';");
             }
         } else if ($question["type_tag"] === "assFlashQuestion") {
             if ($questionObj->getApplet()) {
@@ -1529,12 +1550,12 @@ class copyrightCronHelper
                     $questionObj->getApplet(),
                     "flash",
                     $row["type"],
-                    "\\\$txt = '" . $row["title"] . "';",
-                    "\\\$text = '" . self::_buildPath($tree,
+                    "\$txt = \$lng->txt('obj_" . $row["type"] . "') . '(" . $row["title"] . ")';",
+                    "\$text = \$lng->txt('obj_" . $row["type"] . "') . '(" . self::_buildPath($tree,
                         $row["ref_id"],
                         "",
                         true) .
-                    " & raquo; " . $question["title"] . " & raquo; ' . \\\$copyRightPlugin->txt('question_file');");
+                    " & raquo; " . $question["title"] . " & raquo; ' . \$copyRightPlugin->txt('question_file') . ')';");
             }
         }
     }
@@ -1577,6 +1598,7 @@ class copyrightCronHelper
             "parent_type" => ["text", $a_parent_type],
             "parent_title" => ["text", $a_parent_title],
             "path" => ["text", $a_path]];
+
         $ilDB->insert("cron_crnhk_files_list", $values);
     }
 }
