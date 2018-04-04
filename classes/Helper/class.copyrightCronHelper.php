@@ -15,6 +15,8 @@ class copyrightCronHelper
         $delete_query = "DELETE FROM cron_crnhk_files_list";
 
         $ilDB->manipulate($delete_query);
+        $ilDB->dropSequence("cron_crnhk_files_list");
+        $ilDB->createSequence("cron_crnhk_files_list");
 
         $sql = "SELECT od.obj_id,od.type,od.title,oref.ref_id, od.owner FROM object_data od" .
             " JOIN object_reference oref ON(oref.obj_id = od.obj_id)" .
@@ -215,11 +217,11 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     ["txt" => [$row["title"]]],
-                                    ["txt" => [self::_buildPath(
-                                        $mediaPoolTree,
-                                        $page["id"],
-                                        "",
-                                        false)]],
+                                    ["txt" => [$row["title"] . " &raquo; " . self::_buildPath(
+                                            $mediaPoolTree,
+                                            $page["id"],
+                                            "",
+                                            false)]],
                                     $a_log,
                                     ["lng" => ["obj_" . $row["type"], $row["type"]]]);
                             }
@@ -240,11 +242,11 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     ["txt" => [$row["title"]]],
-                                    ["txt" => [self::_buildPath(
-                                        $sCORMPoolTree,
-                                        $page["id"],
-                                        "",
-                                        false)]],
+                                    ["txt" => [$row["title"] . " &raquo; " . self::_buildPath(
+                                            $sCORMPoolTree,
+                                            $page["id"],
+                                            "",
+                                            false)]],
                                     $a_log,
                                     ["lng" => ["obj_" . $row["type"], $row["type"]]]);
                             }
@@ -264,7 +266,7 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     ["txt" => [$row["title"]]],
-                                    ["txt" => [$blogPosting->getTitle()]],
+                                    ["txt" => [$row["title"] . " &raquo; " . $blogPosting->getTitle()]],
                                     $a_log,
                                     ["lng" => ["obj_" . $row["type"], $row["type"]]]);
                             }
@@ -362,7 +364,7 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     ["txt" => [$row["title"]]],
-                                    ["txt" => [$loTitle]],
+                                    ["txt" => [$row["title"] . " &raquo; " . $loTitle]],
                                     $a_log,
                                     ["lng" => ["obj_" . $row["type"], $row["type"]]]);
                             }
@@ -416,7 +418,7 @@ class copyrightCronHelper
                                 $row["type"],
                                 $row["ref_id"],
                                 ["txt" => [$row["title"]]],
-                                ["copyright" => ["content_page"]],
+                                ["txt" => [$row["title"], "copyright" => ["content_page"]]],
                                 $a_log,
                                 ["lng" => ["obj_" . $row["type"], $row["type"]]]);
                         }
@@ -431,7 +433,7 @@ class copyrightCronHelper
                                 $row["type"],
                                 $row["ref_id"],
                                 ["txt" => [$row["title"]]],
-                                ["copyright" => ["content_page"]],
+                                ["txt" => [$row["title"]], "copyright" => ["content_page"]],
                                 $a_log,
                                 ["lng" => ["obj_" . $row["type"], $row["type"]]]);
                         }
@@ -447,7 +449,7 @@ class copyrightCronHelper
                                 $row["type"],
                                 $row["ref_id"],
                                 ["txt" => [$row["title"]]],
-                                ["copyright" => ["content_page"]],
+                                ["txt" => [$row["title"]], "copyright" => ["content_page"]],
                                 $a_log,
                                 ["lng" => ["obj_" . $row["type"], $row["type"]]]);
                         }
@@ -463,7 +465,7 @@ class copyrightCronHelper
                                 $row["type"],
                                 $row["ref_id"],
                                 ["txt" => [$row["title"]]],
-                                ["copyright" => ["content_page"]],
+                                ["txt" => [$row["title"]], "copyright" => ["content_page"]],
                                 $a_log,
                                 ["lng" => ["obj_" . $row["type"], $row["type"]]]);
                         }
@@ -535,7 +537,7 @@ class copyrightCronHelper
                                 $row["type"],
                                 $row["ref_id"],
                                 ["txt" => [$row["title"]]],
-                                ["copyright" => ["content_page"]],
+                                ["txt" => [$row["title"]], "copyright" => ["content_page"]],
                                 $a_log,
                                 ["lng" => ["obj_" . $row["type"], $row["type"]]]);
                         }
@@ -556,7 +558,7 @@ class copyrightCronHelper
                                         $row["type"],
                                         $row["ref_id"],
                                         ["txt" => [$row["title"]]],
-                                        ["txt" => [$glossaryTerm["term"]]],
+                                        ["txt" => [$row["title"] . " &raquo; " . $glossaryTerm["term"]]],
                                         $a_log,
                                         ["lng" => ["obj_" . $row["type"], $row["type"]]]);
                                 }
@@ -578,7 +580,7 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     ["txt" => [$row["title"]]],
-                                    ["txt" => [$table->getTitle()]],
+                                    ["txt" => [$row["title"] . " &raquo; " . $table->getTitle()]],
                                     $a_log,
                                     ["lng" => ["obj_" . $row["type"], $row["type"]]]);
 
@@ -671,7 +673,7 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     ["txt" => [$row["title"]]],
-                                    ["txt" => [$title]],
+                                    ["txt" => [$row["title"] . " &raquo; " . $title]],
                                     $a_log,
                                     ["lng" => ["obj_" . $row["type"], $row["type"]]]);
                             }
@@ -719,7 +721,7 @@ class copyrightCronHelper
                                     $row["type"],
                                     $row["ref_id"],
                                     ["txt" => [$row["title"]]],
-                                    ["txt" => [$page->getTitle()]],
+                                    ["txt" => [$row["title"] . " &raquo; " . $page->getTitle()]],
                                     $a_log,
                                     ["lng" => ["obj_" . $row["type"], $row["type"]]]);
                             }
@@ -1593,8 +1595,8 @@ class copyrightCronHelper
                     self::_fillFileArrayFromPageContent($stysPage->getXMLContent(),
                         "stys",
                         21,
-                        ["lng" => "obj_stys"],
-                        ["lng" => "obj_stys", "txt" => $page["title"]],
+                        ["lng" => ["obj_stys"]],
+                        ["lng" => ["obj_stys"], "txt" => [$page["title"]]],
                         $a_log,
                         ["lng" => ["obj_stys", "stys"]],
                         false);
@@ -1770,7 +1772,7 @@ class copyrightCronHelper
                                 $row_ref_id,
                                 "ref_id",
                                 true
-                            ) . " &raquo; " . $row_title_parms . " &raquo; ";
+                            ) . " &raquo; ";
 
 
                         $lng_parms = [
@@ -1801,7 +1803,7 @@ class copyrightCronHelper
 
                         self::_createParentTitleParmsArray($row_title_parms, $parent_title, $cnt, $lng_parms, $copyright_parms, $txt_parms);
 
-                        $parent_title = ")";
+                        $parent_title .= ")";
 
                         $parent_title_parms = array_merge(["lng" => $lng_parms], ["copyright" => $copyright_parms], ["txt" => $txt_parms]);
                     } else {
@@ -1843,7 +1845,7 @@ class copyrightCronHelper
                 $used_file_names = [];
 
                 foreach ($mediaItems as $mediaItem) {
-                    if ($mediaItem->getLocationType() === "LocalFile") {
+                    if ($mediaItem->getLocationType() === "LocalFile" && $mediaItem->getlocation()) {
                         $cnt = 1;
 
                         if ($build_path) {
@@ -1852,7 +1854,7 @@ class copyrightCronHelper
                                     $row_ref_id,
                                     "ref_id",
                                     true
-                                ) . " &raquo; " . $row_title_parms . " &raquo; ";
+                                ) . " &raquo; ";
 
                             $lng_parms = [
                                 $cnt . " " => "obj_" . $row_type
@@ -1879,7 +1881,7 @@ class copyrightCronHelper
 
                             self::_createParentTitleParmsArray($row_title_parms, $parent_title, $cnt, $lng_parms, $copyright_parms, $txt_parms);
 
-                            $parent_title = ")";
+                            $parent_title .= ")";
 
                             $parent_title_parms = array_merge(["lng" => $lng_parms], ["copyright" => $copyright_parms], ["txt" => $txt_parms]);
                         } else {
@@ -1946,7 +1948,7 @@ class copyrightCronHelper
                                             $row_ref_id,
                                             "ref_id",
                                             true) .
-                                        " &raquo; " . $row_title_parms . " &raquo; ";
+                                        " &raquo; ";
 
                                     $lng_parms = [
                                         $cnt . " " => "obj_" . $row_type
@@ -1973,7 +1975,7 @@ class copyrightCronHelper
 
                                     self::_createParentTitleParmsArray($row_title_parms, $parent_title, $cnt, $lng_parms, $copyright_parms, $txt_parms);
 
-                                    $parent_title = ")";
+                                    $parent_title .= ")";
 
                                     $parent_title_parms = array_merge(["lng" => $lng_parms], ["copyright" => $copyright_parms], ["txt" => $txt_parms]);
                                 } else {
@@ -2024,7 +2026,7 @@ class copyrightCronHelper
                             $row_ref_id,
                             "ref_id",
                             true) .
-                        " &raquo; " . $row_title_parms . " &raquo; ";
+                        " &raquo; ";
 
                     $lng_parms = [
                         $cnt . " " => "obj_" . $row_type
@@ -2051,7 +2053,7 @@ class copyrightCronHelper
 
                     self::_createParentTitleParmsArray($row_title_parms, $parent_title, $cnt, $lng_parms, $copyright_parms, $txt_parms);
 
-                    $parent_title = ")";
+                    $parent_title .= ")";
 
                     $parent_title_parms = array_merge(["lng" => $lng_parms], ["copyright" => $copyright_parms], ["txt" => $txt_parms]);
                 } else {
@@ -2116,8 +2118,8 @@ class copyrightCronHelper
             self::_fillFileArrayFromPageContent($questionPage->getXMLContent(),
                 $row["type"],
                 $row["ref_id"],
-                ["txt" => $row["title"]],
-                ["txt" => $question["title"], "copyright" => "question_page"],
+                ["txt" => [$row["title"]]],
+                ["txt" => [$row["title"] . " &raquo; " . $question["title"]], "copyright" => ["question_page"]],
                 $a_log,
                 ["lng" => ["obj_" . $row["type"], $row["type"]]]);
         }
@@ -2132,7 +2134,7 @@ class copyrightCronHelper
                     $row["type"],
                     $row["ref_id"],
                     ["txt" => $row["title"]],
-                    ["txt" => $question["title"], "lng" => "hint"],
+                    ["txt" => [$row["title"] . " &raquo; " . $question["title"]], "lng" => ["hint"]],
                     $a_log,
                     ["lng" => ["obj_" . $row["type"], $row["type"]]]);
             }
@@ -2150,7 +2152,7 @@ class copyrightCronHelper
                     $row["type"],
                     $row["ref_id"],
                     ["txt" => $row["title"]],
-                    ["txt" => $question["title"], "lng" => "feedback_generic"],
+                    ["txt" => [$row["title"] . " &raquo; " . $question["title"]], "lng" => ["feedback_generic"]],
                     $a_log,
                     ["lng" => ["obj_" . $row["type"], $row["type"]]]);
             }
@@ -2168,7 +2170,7 @@ class copyrightCronHelper
                     $row["type"],
                     $row["ref_id"],
                     ["txt" => $row["title"]],
-                    ["txt" => $question["title"], "lng" => "feedback_generic"],
+                    ["txt" => [$row["title"] . " &raquo; " . $question["title"]], "lng" => ["feedback_generic"]],
                     $a_log,
                     ["lng" => ["obj_" . $row["type"], $row["type"]]]);
             }

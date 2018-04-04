@@ -96,10 +96,8 @@ class ilCopyRightCron extends ilCronJob
      */
     public function run()
     {
-        global $ilDB, $lng, $tree, $ilPluginAdmin, $rbacreview, $ilUser;
-
         require_once "log/class.ilCopyRightCronLog.php";
-        require_once "helper/class.copyrightCronHelper.php";
+        require_once "Helper/class.copyrightCronHelper.php";
 
         $this->log = ilCopyRightCronLog::getInstance();
         $this->log->info('Starting CopyRight Cronjob...');
