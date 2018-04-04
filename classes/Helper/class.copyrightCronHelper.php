@@ -102,7 +102,7 @@ class copyrightCronHelper
                             $mediaItems = $mediaObject->getMediaItems();
 
                             foreach ($mediaItems as $mediaItem) {
-                                if ($mediaItem->getLocationType() === "LocalFile") {
+                                if ($mediaItem->getLocationType() === "LocalFile" && $mediaItem->getlocation()) {
                                     $path = "%s (" . self::_buildPath(
                                             $tree,
                                             $row["ref_id"],
@@ -1130,7 +1130,7 @@ class copyrightCronHelper
                             $mediaItems = $mob->getMediaItems();
 
                             foreach ($mediaItems as $mediaItem) {
-                                if ($mediaItem->getLocationType() !== "Reference") {
+                                if ($mediaItem->getLocationType() !== "Reference" && $mediaItem->getlocation()) {
                                     $path = "%s (" . self::_buildPath(
                                             $tree,
                                             $row["ref_id"],
