@@ -1800,6 +1800,7 @@ class copyrightCronHelper
 
                         $copyright_parms = [];
                         $txt_parms = [];
+                        $cnt++;
 
                         self::_createParentTitleParmsArray($row_title_parms, $parent_title, $cnt, $lng_parms, $copyright_parms, $txt_parms);
 
@@ -1875,6 +1876,7 @@ class copyrightCronHelper
                             $lng_parms = [
                                 $cnt . " " => "obj_" . $row_type
                             ];
+                            $cnt++;
 
                             $copyright_parms = [];
                             $txt_parms = [];
@@ -1969,6 +1971,7 @@ class copyrightCronHelper
                                     $lng_parms = [
                                         $cnt . " " => "obj_" . $row_type
                                     ];
+                                    $cnt++;
 
                                     $copyright_parms = [];
                                     $txt_parms = [];
@@ -2047,6 +2050,7 @@ class copyrightCronHelper
                     $lng_parms = [
                         $cnt . " " => "obj_" . $row_type
                     ];
+                    $cnt++;
 
                     $copyright_parms = [];
                     $txt_parms = [];
