@@ -102,10 +102,10 @@ class ilCopyRightCron extends ilCronJob
         $this->log = ilCopyRightCronLog::getInstance();
         $this->log->info('Starting CopyRight Cronjob...');
         $result = new ilCronJobResult();
+        copyrightCronHelper::_collectFilesInRepository($this->log);
         $result->setMessage('Finished CopyRightCron job task successfully');
         $result->setStatus(ilCronJobResult::STATUS_OK);
 
-        copyrightCronHelper::_collectFilesInRepository($this->log);
 
         $this->log->info('...CopyRightCron job finished.');
 
